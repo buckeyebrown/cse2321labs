@@ -14,15 +14,19 @@
 int getNumberOfVerticesFromUser();
 //int promptUserForAdjMatrix(int numVertices, int **matrix);
 int promptUserForAdjMatrix(int numVertices, int matrix[12][12]);
-int** allocateMemoryForAdjMatrix(int numVertices);
+//int** allocateMemoryForAdjMatrix(int numVertices);
 int printMatrix(int numVertices, int matrix[12][12]);
+int initializedMarkedArray(int numVertices, int *marked);
 
 int main(){
 	int matrix[12][12];
 	int numVertices = getNumberOfVerticesFromUser();
+	int marked[numVertices];
 	//int **matrix = allocateMemoryForAdjMatrix(numVertices);
 	promptUserForAdjMatrix(numVertices, matrix);
 	printMatrix(numVertices, matrix);
+	initializedMarkedArray(numVertices, marked);
+
 return 0;
 }
 
@@ -35,6 +39,16 @@ int getNumberOfVerticesFromUser(){
   return numVertices;
 }
 
+int initializedMarkedArray(int numVertices, int *marked){
+ int a=0;
+ while (a < numVertices){
+	marked[a] = 0;
+	a++;
+ }
+ return 0;
+}
+
+/**
 int** allocateMemoryForAdjMatrix(int numVertices){
  int **matrix;
  matrix = (int**) malloc (sizeof(int) * numVertices);
@@ -44,8 +58,9 @@ int** allocateMemoryForAdjMatrix(int numVertices){
 	i++;
  }	
 }
-
+*/
 //int promptUserForAdjMatrix(int numVertices, int **matrix){
+
 int promptUserForAdjMatrix(int numVertices, int matrix[12][12]){
 	int i = 0;
 	int val;
@@ -74,5 +89,6 @@ int printMatrix(int numVertices, int matrix[12][12]){
 		}
 		i++;
 	}
-	printf("\n***");
+	printf("\n***\n");
+	return 0;
 }
