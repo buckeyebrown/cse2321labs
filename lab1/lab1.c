@@ -1,41 +1,46 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 
 /**
 * Dylan Brown
 * CSE 2321
 * Lab 1
-* The purpose of this lab is to conduct a Depth First Search.
+* The purpose of this lab is to conduct a Depth First Search given an
+* inputted number of vertices and an adjacency matrix.
 *
 */
 
 
 int getNumberOfVerticesFromUser();
 int promptUserForAdjMatrix(int numVertices, int matrix[12][12]);
-int printMatrix(int numVertices, int matrix[12][12]);
 int initializedMarkedArray(int numVertices, int *marked);
 int depthFirstSearch(int *marked, int matrix[12][12], int i, int numVertices);
+int beginDFS(int *marked, int matrix[12][12], int numVertices);
 
 int main(){
 	int matrix[12][12];
 	int numVertices = getNumberOfVerticesFromUser();
 	int marked[numVertices];
 	promptUserForAdjMatrix(numVertices, matrix);
-	printMatrix(numVertices, matrix);
 	initializedMarkedArray(numVertices, marked);
-	printf("\nComponent: ");
-	depthFirstSearch(marked, matrix, 0, numVertices);
-	printf("\n");
-	printf("Marked vertices: ");
-	int a = 0;
-	while (a < numVertices){
-	printf(" %i", marked[a]);
-	a++;
-	}
-	printf("\n");
-
+	beginDFS(marked, matrix, numVertices);
 return 0;
+}
+
+int beginDFS(int *marked, int matrix[12][12], int numVertices){
+	int numComponents = 0;
+	int x = 0;
+
+	while (x < numVertices){
+		if (marked[x] == 0){
+			numComponents++;
+			printf("\nComponent:");
+			depthFirstSearch(marked, matrix, x, numVertices);
+		}
+		x++;
+	}
+	printf("\nTotal number of components: %i \n", numComponents);
+
+	return 0;
 }
 
 int depthFirstSearch(int *marked, int matrix[12][12], int i, int numVertices){
@@ -83,21 +88,5 @@ int promptUserForAdjMatrix(int numVertices, int matrix[12][12]){
 		}
 		i++;
 	}
-	return 0;
-}
-
-int printMatrix(int numVertices, int matrix[12][12]){
-	int i = 0;
-	printf("\n***");
-	while (i < numVertices){
-		int j = 0;
-		printf("\n");
-		while (j < numVertices){
-			printf("%i ", matrix[i][j]);
-			j++;
-		}
-		i++;
-	}
-	printf("\n***\n");
 	return 0;
 }
