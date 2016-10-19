@@ -17,6 +17,7 @@ int promptUserForAdjMatrix(int numVertices, int matrix[12][12]);
 //int** allocateMemoryForAdjMatrix(int numVertices);
 int printMatrix(int numVertices, int matrix[12][12]);
 int initializedMarkedArray(int numVertices, int *marked);
+int depthFirstSearch(int *marked, int matrix[12][12], int i, int numVertices);
 
 int main(){
 	int matrix[12][12];
@@ -26,8 +27,22 @@ int main(){
 	promptUserForAdjMatrix(numVertices, matrix);
 	printMatrix(numVertices, matrix);
 	initializedMarkedArray(numVertices, marked);
+	depthFirstSearch(marked, matrix, 0, numVertices);
 
 return 0;
+}
+
+int depthFirstSearch(int *marked, int matrix[12][12], int i, int numVertices){
+	int j=0;
+	printf("\n%i", i);
+	marked[i]=1;
+	while (j < numVertices){
+	if (matrix[i][j] == 1 && !marked[j]){
+		depthFirstSearch(marked, matrix, j, numVertices);
+		j++;
+		}
+	}
+
 }
 
 int getNumberOfVerticesFromUser(){
