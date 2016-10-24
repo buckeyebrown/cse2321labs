@@ -23,6 +23,7 @@ int main(){
 	promptUserForAdjMatrix(numVertices, matrix);
 	initializedMarkedArray(numVertices, marked);
 	beginDFS(marked, matrix, numVertices);
+
 return 0;
 }
 
