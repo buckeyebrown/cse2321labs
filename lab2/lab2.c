@@ -10,39 +10,38 @@
 *
 */
 
-
-int getNumberOfVerticesFromUser();
-int promptUserForAdjMatrix(int numVertices, int matrix[12][12]);
-Queue* initializeQueue(int numVertices);
-Node* createNode(int nodeVal);
-void enqueue(int data, Queue* queue);
-
-typedef struct queue{
-	Node* start;
-	Node* end;
-	int length;
-} Queue;
-
 typedef struct node{
 	int data;
+	int marked;
 	struct node *next;
 } Node;
 
+typedef struct queue{
+	Node* start;
+	int length;
+} Queue;
+
+int getNumberOfVerticesFromUser();
+int promptUserForAdjMatrix(int numVertices, int matrix[12][12]);
+Queue* initializeQueue();
+void initializedMarkedArray(int numVertices, int *marked);
+Node* createNode(int nodeVal);
+void enqueue(int data, Queue* queue);
+Node* dequeue(Queue* queue);
+int beginBFS(int *marked, int matrix[12][12], int numVertices);
+void breadthFirstSearch(int *marked, int matrix[12][12], int i, int numVertices);
 
 int main(int argc, char *argv[]){
   int matrix[12][12];
   int numVertices = getNumberOfVerticesFromUser();
   int marked[numVertices];
   promptUserForAdjMatrix(numVertices, matrix);
-  Queue* queue = initializeQueue(numVertices);
-  promptUserForInputOfPositiveInt(list);
-  
+  initializedMarkedArray(numVertices, marked);
+  beginBFS(marked, matrix, numVertices);
   return 0;
 }
 
-int getNumberOfVerticesFromUser(){
-  printf("Please enter the number of vertices in this graph.\n");
-  
+int getNumberOfVerticesFromUser(){  
   int numVertices; 
   scanf("%i", &numVertices);
 
@@ -52,7 +51,6 @@ int getNumberOfVerticesFromUser(){
 int promptUserForAdjMatrix(int numVertices, int matrix[12][12]){
 	int i = 0;
 	int val;
-  	printf("\nPlease enter the Adjacency Matrix below.\n");
 	while (i < numVertices){
 		int j = 0;
 		while (j < numVertices){
@@ -65,26 +63,35 @@ int promptUserForAdjMatrix(int numVertices, int matrix[12][12]){
 	return 0;
 }
 
-Queue* initializeQueue(int numVertices){
+Queue* initializeQueue(){
 	Queue* queue = malloc(sizeof(Queue));
 	queue->start = NULL;
-	queue->end = NULL;
-	queue->length = numVertices;
+	queue->length = 0;
 	return queue;
+}
+
+void initializedMarkedArray(int numVertices, int *marked){
+ int a=0;
+ while (a < numVertices){
+	marked[a] = 0;
+	a++;
+ }
 }
 
 Node* createNode(int nodeVal){
 //Create a node structure from a value and return it
   Node* createdNode = malloc(sizeof(Node));
   createdNode->data = nodeVal;
+  createdNode->marked = 0;
   createdNode->next = NULL;
   return createdNode;
 }
 
 void enqueue(int data, Queue* queue){
-	Node* node = creadeNode(data);
+	Node* node = createNode(data);
 	if(queue->start == NULL){
 		queue->start = node;
+		queue->length++;
 	}
 	else {
 	Node* priorNode = queue->start;
@@ -92,99 +99,58 @@ void enqueue(int data, Queue* queue){
 			priorNode = priorNode->next;
 		}
 	priorNode->next = node;
-	queue->end = node;
+	queue->length++;
 	}
 }
 
 Node* dequeue(Queue* queue){
 	Node* head = queue->start;
 	queue->start = head->next;
+	queue->length--;
 	return head;
 }
 
-//CSE lab 1
-
-/**
-int getNumberOfVerticesFromUser();
-int promptUserForAdjMatrix(int numVertices, int matrix[12][12]);
-int initializedMarkedArray(int numVertices, int *marked);
-int depthFirstSearch(int *marked, int matrix[12][12], int i, int numVertices);
-int beginDFS(int *marked, int matrix[12][12], int numVertices);
-
-int main(){
-	int matrix[12][12];
-	int numVertices = getNumberOfVerticesFromUser();
-	int marked[numVertices];
-	promptUserForAdjMatrix(numVertices, matrix);
-	initializedMarkedArray(numVertices, marked);
-	beginDFS(marked, matrix, numVertices);
-
-return 0;
-}
-
-
-int beginDFS(int *marked, int matrix[12][12], int numVertices){
+int beginBFS(int *marked, int matrix[12][12], int numVertices){
 	int numComponents = 0;
-	int x = 0;
 
-	while (x < numVertices){
-		if (marked[x] == 0){
+	int i = 0;
+	while (i < numVertices){
+		if (marked[i] == 0){
 			numComponents++;
 			printf("\nComponent:");
-			depthFirstSearch(marked, matrix, x, numVertices);
+			printf("\nVertices & Distances:\n");
+			breadthFirstSearch(marked, matrix, i, numVertices);
 		}
-		x++;
+		i++;
 	}
 	printf("\nTotal number of components: %i \n", numComponents);
 
 	return 0;
 }
 
-int depthFirstSearch(int *marked, int matrix[12][12], int i, int numVertices){
-	int j=0;
-	int num = i + 1;
-	printf(" %i", num);
+void breadthFirstSearch(int *marked, int matrix[12][12], int i, int numVertices){
+	Queue* queue = initializeQueue();
 	marked[i]=1;
-	while (j < numVertices){
-	if (matrix[i][j] == 1 && !marked[j]){
-		depthFirstSearch(marked, matrix, j, numVertices);
-		}
-	j++;
-	}
-	return 0;
-}
+	int pathLength = 0;
+	enqueue(i, queue);
 
-int getNumberOfVerticesFromUser(){
-  printf("Please enter the number of vertices in this graph.\n");
-  
-  int numVertices; 
-  scanf("%i", &numVertices);
-
-  return numVertices;
-}
-
-int initializedMarkedArray(int numVertices, int *marked){
- int a=0;
- while (a < numVertices){
-	marked[a] = 0;
-	a++;
- }
- return 0;
-}
-
-int promptUserForAdjMatrix(int numVertices, int matrix[12][12]){
-	int i = 0;
-	int val;
-  	printf("\nPlease enter the Adjacency Matrix below.\n");
-	while (i < numVertices){
+	while(queue->length > 0){
+		Node* current = dequeue(queue);
+		i = current->data;
+		int num = i + 1;
+		printf("%i %i\n", num, pathLength);
 		int j = 0;
+		int pathLengthUpdated = 0;
 		while (j < numVertices){
-			scanf("%i", &val);
-			matrix[i][j] = val;
+			if(matrix[i][j] == 1 && !marked[j]){
+				enqueue(j, queue);
+				marked[j] = 1;
+				if (pathLengthUpdated == 0){
+					pathLength++;
+					pathLengthUpdated = 1;
+				}
+			}
 			j++;
 		}
-		i++;
 	}
-	return 0;
 }
-*/
