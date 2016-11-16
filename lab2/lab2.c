@@ -7,6 +7,9 @@
 * Lab 2
 * The purpose of this lab is to conduct a Breadth First Search given an
 * inputted number of vertices and an adjacency matrix.
+* Email: brown.4414@osu.edu
+* To compile: gcc -o lab2 lab2.c
+* To run: ./lab2 < test1
 *
 */
 
